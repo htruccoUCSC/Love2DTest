@@ -8,6 +8,6 @@ on:
 jobs:
   build:
     name: Build bare love package
-    uses: love-actions/love-actions-core@v1
+    uses: love-actions/love-actions-core@v1.1.1
     with:
       build-list: ./main.lua
