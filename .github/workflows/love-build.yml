@@ -7,17 +7,7 @@ on:
 
 jobs:
   build:
-    name: Build distributables
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-     # Build the applications
-    - uses: nhartland/love-build@v1
-      with:
-       app_name: 'hello_world'
-       love_version: '11.5'
-   # Upload the built applications
-    - uses: actions/upload-artifact@v4
-      with:
-        name: built-applications
-        path: 'release'
+    name: Build bare love package
+    uses: love-actions/love-actions-core@v1
+    with:
+      build-list: ./main.lua
