@@ -9,20 +9,15 @@ jobs:
   build:
     name: Build distributables
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build LÖVE application
-        id: love-build
-        uses: nhartland/love-build@v1
-        with:
-          app_name: 'Love2DTest'
-          love_version: '11.5'
-
-      - name: Upload built applications (release directory)
-        uses: actions/upload-artifact@v4
-        with:
-          name: built-applications
-          path: 'release'
+    - uses: actions/checkout@v4
+     # Build the applications
+    - uses: nhartland/love-build@v1
+      with:
+       app_name: 'hello_world'
+       love_version: '11.5'
+   # Upload the built applications
+    - uses: actions/upload-artifact@v4
+      with:
+        name: built-applications
+        path: 'release'
