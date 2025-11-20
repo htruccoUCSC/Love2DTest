@@ -1,0 +1,28 @@
+name: Build LÖVE Game
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    name: Build distributables
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build LÖVE application
+        id: love-build
+        uses: nhartland/love-build@v1
+        with:
+          app_name: 'Love2DTest'
+          love_version: '11.7'
+
+      - name: Upload built applications (release directory)
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-applications
+          path: 'release'
