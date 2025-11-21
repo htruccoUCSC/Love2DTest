@@ -40,7 +40,7 @@ jobs:
 
       - name: Build web package with love.js
         # love.js CLI: npx love.js [options] <input> <output>
-        run: npx love.js game.love web
+        run: npx love.js -t SquareTest game.love web
 
       - name: Ensure web contains game.love fallback
         run: |
