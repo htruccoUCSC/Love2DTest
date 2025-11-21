@@ -1,8 +1,5 @@
--- loading the CPML math library
-local cpml = require "lib/cpml"
-
 --loading the G3D graphics library
-local g3d = require "lib/g3d/g3d"
+local g3d = require "g3d"
 
 --more demo code to make sure the server and libraries work (code by groverbuger )
 local earth = g3d.newModel("assets/sphere.obj", "assets/earth.png", {4,0,0})
