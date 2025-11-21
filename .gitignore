@@ -39,3 +39,9 @@ luac.out
 *.x86_64
 *.hex
 
+# Node
+node_modules/
+web/
+
+# Love2D
+*.love

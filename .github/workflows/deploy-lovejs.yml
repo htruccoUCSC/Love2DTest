@@ -1,0 +1,62 @@
+name: Build and Deploy LÖVE (love.js)
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    name: Build .love from `src/`, create web build, and publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build game.love from `src/`
+        run: git archive --format=zip -o game.love HEAD:src
+
+      - name: Show game.love info
+        run: ls -lh game.love || true
+
+      - name: Upload .love artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: game.love
+          path: game.love
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install love.js from npm
+        run: npm install --no-save love.js
+
+      - name: Build web package with love.js
+        # love.js CLI: npx love.js [options] <input> <output>
+        run: npx love.js game.love web
+
+      - name: Ensure web contains game.love fallback
+        run: |
+          mkdir -p web
+          cp -f game.love web/game.love || true
+
+      - name: Show web contents
+        run: ls -la web || true
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v3
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: web
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v1
