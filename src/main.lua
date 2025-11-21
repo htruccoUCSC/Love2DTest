@@ -1,27 +1,31 @@
-function love.load()
-    square = {}
-    square.x = 100
-    square.y = 100
-    square.size = 50
-    square.speed = 200 -- pixels per second
-end
+-- loading the CPML math library
+local cpml = require "lib/cpml"
+
+--loading the G3D graphics library
+local g3d = require "lib/g3d/g3d"
+
+--more demo code to make sure the server and libraries work (code by groverbuger )
+local earth = g3d.newModel("assets/sphere.obj", "assets/earth.png", {4,0,0})
+local moon = g3d.newModel("assets/sphere.obj", "assets/moon.png", {4,5,0}, nil, 0.5)
+local background = g3d.newModel("assets/sphere.obj", "assets/starfield.png", nil, nil, 500)
+local timer = 0
 
 function love.update(dt)
-    if love.keyboard.isDown("right") then
-        square.x = square.x + square.speed * dt
-    end
-    if love.keyboard.isDown("left") then
-        square.x = square.x - square.speed * dt
-    end
-    if love.keyboard.isDown("down") then
-        square.y = square.y + square.speed * dt
-    end
-    if love.keyboard.isDown("up") then
-        square.y = square.y - square.speed * dt
+    timer = timer + dt
+    moon:setTranslation(math.cos(timer)*5 + 4, math.sin(timer)*5, 0)
+    moon:setRotation(0, 0, timer - math.pi/2)
+    g3d.camera.firstPersonMovement(dt)
+    if love.keyboard.isDown "escape" then
+        love.event.push "quit"
     end
 end
 
 function love.draw()
-    love.graphics.setColor(1, 0, 0) -- Set color to red
-    love.graphics.rectangle("fill", square.x, square.y, square.size, square.size)
+    background:draw()
+    earth:draw()
+    moon:draw()
+end
+
+function love.mousemoved(x,y, dx,dy)
+    g3d.camera.firstPersonLook(dx,dy)
 end

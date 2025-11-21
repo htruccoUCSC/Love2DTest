@@ -1,0 +1,6 @@
+[submodule "src/lib/g3d"]
+	path = src/lib/g3d
+	url = https://github.com/groverburger/g3d.git
+[submodule "src/lib/cpml"]
+	path = src/lib/cpml
+	url = https://github.com/excessive/cpml.git
