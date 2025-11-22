@@ -18,9 +18,27 @@ function runSync(cmd, args, opts = {}) {
 }
 
 function buildOnce() {
-  console.log('Building game.love from `src/`...');
-  // git archive --format=zip -o game.love HEAD:src
-  runSync('git', ['archive', '--format=zip', '-o', gameLove, 'HEAD:src']);
+  console.log('Building game.love from `src/` (local files)...');
+  // Prefer zipping the local src/ folder so uncommitted changes are included.
+  try {
+    if (process.platform === 'win32') {
+      // Use PowerShell Compress-Archive on Windows
+      const psCmd = [
+        '-NoProfile',
+        '-Command',
+        `Compress-Archive -Path '${path.join(srcPath, "*")}' -DestinationPath '${gameLove}' -Force`
+      ];
+      runSync('powershell', psCmd);
+    } else {
+      // On Unix-like systems, run zip from the src directory so files are stored
+      // at the archive root (no leading `src/` folder).
+      runSync('zip', ['-r', gameLove, '.'], { cwd: srcPath });
+    }
+  } catch (e) {
+    // If zip/Compress-Archive is not available or fails, fall back to original git archive behavior.
+    console.warn('Creating zip from local `src/` failed, falling back to `git archive HEAD:src`:', e.message);
+    runSync('git', ['archive', '--format=zip', '-o', gameLove, 'HEAD:src']);
+  }
 
   console.log('Building web package with love.js...');
   // Use npx to ensure local package bin is used if available

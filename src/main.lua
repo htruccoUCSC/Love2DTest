@@ -18,7 +18,6 @@ function love.update(dt)
 end
 
 function love.draw()
-    background:draw()
     earth:draw()
     moon:draw()
 end
