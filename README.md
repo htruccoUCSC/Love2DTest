@@ -21,4 +21,5 @@ npm run serve
 ```
 
 Notes:
+
 - `vite` is configured with `root: 'web'` so it serves the existing `web/index.html` and static assets.

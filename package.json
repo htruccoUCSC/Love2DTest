@@ -19,6 +19,8 @@
     "vite": "^7.2.0"
   },
   "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown"
+    "*.{js,json,css,md}": [
+      "prettier --write"
+    ]
   }
 }
