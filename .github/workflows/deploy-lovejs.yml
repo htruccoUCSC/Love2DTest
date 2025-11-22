@@ -68,9 +68,22 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: web
+          path: web
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
+
+      - name: debug list workspace and web folder
+        run: |
+          echo "Workspace: $(pwd)"
+          ls -la || true
+          echo "web dir listing:" 
+          ls -la web || true
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: web
 
       - name: Deploy to GitHub Pages
         id: deployment
