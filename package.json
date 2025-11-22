@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "node scripts/dev.js",
-    "serve": "vite"
+    "serve": "vite",
+    "prepare": "husky"
   },
   "dependencies": {
     "express": "^5.1.0",
@@ -12,6 +13,12 @@
   },
   "devDependencies": {
     "chokidar": "^4.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "prettier": "3.6.2",
     "vite": "^7.2.0"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
   }
 }
