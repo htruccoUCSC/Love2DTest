@@ -5,6 +5,8 @@ const fs = require("fs");
 
 const root = process.cwd();
 const srcPath = path.join(root, "src");
+const gameName = "SquareTest";
+const gameZip = path.join(root, "game.zip");
 const gameLove = path.join(root, "game.love");
 const webDir = path.join(root, "web");
 const webGameLove = path.join(webDir, "game.love");
@@ -30,9 +32,15 @@ function buildOnce() {
       const psCmd = [
         "-NoProfile",
         "-Command",
-        `Compress-Archive -Path '${path.join(srcPath, "*")}' -DestinationPath '${gameLove}' -Force`,
+        `Compress-Archive -Path '${path.join(srcPath, "*")}' -DestinationPath '${gameZip}' -Force`,
+      ];
+      const moveCmd = [
+        "-NoProfile",
+        "-Command",
+        `Move-Item -Path '${gameZip}' -Destination '${gameLove}' -Force`,
       ];
       runSync("powershell", psCmd);
+      runSync("powershell", moveCmd);
     } else {
       // On Unix-like systems, run zip from the src directory so files are stored
       // at the archive root (no leading `src/` folder).
@@ -49,15 +57,19 @@ function buildOnce() {
 
   console.log("Building web package with love.js...");
   // Use npx to ensure local package bin is used if available
-  runSync(process.platform === "win32" ? "npx.cmd" : "npx", [
-    "love.js",
-    "-c",
-    "-t",
-    "SquareTest",
-    gameLove,
-    webDir,
-  ]);
-
+  if (process.platform === "win32") {
+    runSync("powershell", [
+      "npx",
+      "love.js.cmd",
+      "-c",
+      "-t",
+      gameName,
+      gameLove,
+      webDir,
+    ]);
+  } else {
+    runSync("npx", ["love.js", "-c", "-t", gameName, gameLove, webDir]);
+  }
   try {
     fs.mkdirSync(webDir, { recursive: true });
     fs.copyFileSync(gameLove, webGameLove);
@@ -69,8 +81,8 @@ function buildOnce() {
 
 function startVite() {
   console.log("Starting Vite dev server...");
-  const cmd = process.platform === "win32" ? "npx.cmd" : "npx";
-  const child = spawn(cmd, ["vite"], { stdio: "inherit" });
+  const cmd = "npx";
+  const child = spawn(cmd, ["vite"], { stdio: "inherit", shell: true });
   child.on("exit", (code) => {
     console.log("Vite exited with", code);
     process.exit(code || 0);
